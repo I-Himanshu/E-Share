@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { MdBookOnline, MdClose, MdContacts, MdHome, MdMenu, MdOutlineMore, MdOutlineRoomService } from "react-icons/md";
+import { MdBookOnline, MdClose, MdContacts, MdFeedback, MdHome, MdMenu, MdOutlineMore, MdOutlineRoomService, MdPrivacyTip } from "react-icons/md";
 import { Link } from 'react-router-dom';
 export const SideNav = ({
   isOpen = false
@@ -25,6 +25,16 @@ export const SideNav = ({
       title: 'Services',
       icon: MdOutlineRoomService,
       link: '/services'
+    },
+    {
+      title: "Features",
+      icon: MdFeedback,
+      link: "/features"
+    },
+    {
+      title: "Privacy",
+      icon: MdPrivacyTip,
+      link: "/privacy"
     }
   ]
   const [currentPath, setCurrentPath] = useState("");
@@ -46,7 +56,7 @@ export const SideNav = ({
       <ul className={'flex flex-col gap-4 mt-5 '}>
         {
           menuItems.map((item, index) => (
-            <Link key={index} className={'md:px-4 py-2 rounded-lg flex justify-center items-center duration-200 ' + (
+            <Link key={index} className={'md:px-4 px-2 py-2 rounded-lg flex justify-center items-center duration-200 ' + (
               currentPath === item.link ? 'bg-blue-500' : 'bg-white hover:bg-blue-500 cursor-pointer'
             )
             + (
