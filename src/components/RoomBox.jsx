@@ -3,17 +3,26 @@ import Ably from 'ably';
 
 const RoomBox = ({ roomName }) => {
     const [inputText, setInputText] = useState('');
-    const [socketMessage, setSocketMessage] = useState('');
     const [ablyInstance, setAblyInstance] = useState(null);
     const [linksInText, setLinksInText] = useState([]);
     const [emailInText, setEmailInText] = useState([]);
     const [roomNameLocal, setRoomNameLocal] = useState("");
+    const inputTextRef = React.useRef('');
+
+    useEffect(() => {
+        inputTextRef.current = inputText;
+    }, [inputText]);
     useEffect(() => {
         const initializeAbly = async () => {
             try {
                 console.log(process.env.REACT_APP_ABLY_API_KEY)
                 const ably = new Ably.Realtime({ key: process.env.REACT_APP_ABLY_API_KEY });
-                setAblyInstance(ably);
+                setAblyInstance((prev)=>{
+                    if(prev == null){
+                        return ably;
+                    }
+                    return prev;
+                });
             } catch (error) {
                 console.error('Error initializing Ably:', error);
             }
@@ -22,7 +31,7 @@ const RoomBox = ({ roomName }) => {
         return () => {
             if (ablyInstance) ablyInstance.close();
         };
-    }, []);
+    }, [ablyInstance]);
 
     useEffect(() => {
         if (!ablyInstance) return;
@@ -33,13 +42,12 @@ const RoomBox = ({ roomName }) => {
             console.log('Received message:', message);
             setRoomNameLocal(roomName);
             if (message.data.type === "please-send-text") {
-                if (inputText.length > 0 || window?.INPUT_TEXT?.length > 0) {
-                    channel.publish('text', { type: 'text', text: inputText || window.INPUT_TEXT });
-                    console.log('Sending text on request :', inputText);
+                if (inputTextRef?.current?.length > 0 || window?.INPUT_TEXT?.length > 0) {
+                    channel.publish('text', { type: 'text', text: inputTextRef.current || window.INPUT_TEXT });
+                    console.log('Sending text on request :', inputTextRef.current || window.INPUT_TEXT);
                 }
             } else {
                 if (message.data.text && message.data.text.length > 0) {
-                    setSocketMessage((prev) => (message.data.text));
                     setInputText((prev) => message.data.text);
                     window.INPUT_TEXT = message.data.text;
                 }
@@ -47,32 +55,17 @@ const RoomBox = ({ roomName }) => {
         };
 
         channel.subscribe('text', handleMessage);
-        channel.publish('text', { type: 'please-send-text', text: inputText });
+        channel.publish('text', { type: 'please-send-text', text: inputTextRef.current });
         return () => {
             channel.unsubscribe('text', handleMessage);
         };
     }, [ablyInstance, roomName]);
 
-    // useEffect(() => {
-    //     const publishText = () => {
-    //         if (!ablyInstance || !inputText) return;
-
-    //         const channel = ablyInstance.channels.get(roomName);
-
-    //         if (socketMessage !== inputText) {
-    //             channel.publish('text', { type: 'text', text: inputText });
-    //         }
-    //     };
-
-    //     const interval = setInterval(publishText, 5000);
-
-    //     return () => clearInterval(interval);
-    // }, [ablyInstance, inputText, roomName, socketMessage]);
-
+    
     useEffect(() => {
         if (inputText.length > 0) {
             const urls = inputText.match(/(https?:\/\/[^\s]+)/g);
-            const emails = inputText.match(/\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b/g);
+            const emails = inputText.match(/\b[\w.-]+@[\w.-]+\.\w{2,4}\b/g);
             if (urls && urls.length > 0) {
                 setLinksInText(urls);
             }
@@ -87,6 +80,15 @@ const RoomBox = ({ roomName }) => {
         const channel = ablyInstance.channels.get(roomName);
 
         channel.publish('text', { type: 'text', text: inputText });
+
+        // send a post request to the server
+        fetch(process.env.REACT_APP_ABLY_API_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ text: inputText }),
+        })
     };
 
     const handleClearButtonClick = () => {
