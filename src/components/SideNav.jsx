@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { MdBookOnline, MdClose, MdContacts, MdFeedback, MdHome, MdMenu, MdOutlineMore, MdOutlineRoomService, MdPrivacyTip } from "react-icons/md";
+import { MdClose, MdContacts, MdFeedback, MdHome, MdMenu, MdOutlineMore, MdOutlineRoomService, MdPrivacyTip } from "react-icons/md";
 import { Link } from 'react-router-dom';
 export const SideNav = ({
   isOpen = false
@@ -40,7 +40,7 @@ export const SideNav = ({
   const [currentPath, setCurrentPath] = useState("");
   useEffect(()=>{
     setCurrentPath(window.location.pathname)
-  },[window.location])
+  },[])
   return (
     <div className='flex flex-col bg-[#999] sticky left-0 top-0 h-screen  pt-5 p-2'>
 
