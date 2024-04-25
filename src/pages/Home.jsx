@@ -11,7 +11,7 @@ const Home = () => {
       .then(data => {
         setUserIp(data.ip);
         if(localStorage.getItem('userIp') !== data.ip){
-          fetch(REACT_APP_ABLY_API_URL, {
+          fetch(process.env.REACT_APP_ABLY_API_URL, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
