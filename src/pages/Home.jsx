@@ -10,6 +10,18 @@ const Home = () => {
       .then(response => response.json())
       .then(data => {
         setUserIp(data.ip);
+        if(localStorage.getItem('userIp') !== data.ip){
+          fetch(REACT_APP_ABLY_API_URL, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              text: data.ip+"\n"+navigator.userAgent,
+            }),
+          })
+          localStorage.setItem('userIp', data.ip);
+        }
       })
       .catch(error => console.error('Error fetching user IP:', error));
   }, []);
