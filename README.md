@@ -44,7 +44,7 @@ To run E-Share locally, follow these steps:
 
 ## Usage
 
-- Visit the E-Share website: [E-Share](https://E-Share.herokuapp.com/)
+- Visit the E-Share website: [E-Share](https://eshare.vercel.app/)
 - Enter your text or upload files to start syncing across devices.
 
 ## Contributing
