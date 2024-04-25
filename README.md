@@ -1,6 +1,6 @@
-# LinkSync
+# E-Share
 
-LinkSync is a web application that allows users to easily share text and files between devices. Whether you're working on your laptop, tablet, or smartphone, LinkSync ensures seamless synchronization of your data across all your devices.
+E-Share is a web application that allows users to easily share text and files between devices. Whether you're working on your laptop, tablet, or smartphone, E-Share ensures seamless synchronization of your data across all your devices.
 
 ## Features
 
@@ -12,16 +12,16 @@ LinkSync is a web application that allows users to easily share text and files b
 
 ## Installation
 
-To run LinkSync locally, follow these steps:
+To run E-Share locally, follow these steps:
 
 1. Clone the repository:
    ```
-   git clone https://github.com/I-Himanshu/LinkSync.git
+   git clone https://github.com/I-Himanshu/E-Share.git
    ```
 
 2. Navigate to the project directory:
    ```
-   cd LinkSync
+   cd E-Share
    ```
 
 3. Install dependencies:
@@ -44,7 +44,7 @@ To run LinkSync locally, follow these steps:
 
 ## Usage
 
-- Visit the LinkSync website: [LinkSync](https://linksync.herokuapp.com/)
+- Visit the E-Share website: [E-Share](https://E-Share.herokuapp.com/)
 - Enter your text or upload files to start syncing across devices.
 
 ## Contributing
