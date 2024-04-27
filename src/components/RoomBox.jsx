@@ -2,11 +2,21 @@ import React, { useEffect, useState } from 'react';
 import Ably from 'ably';
 
 const RoomBox = ({ roomName }) => {
+
+    // check if roomname is ipv6 then take first 13 characters
+    if (roomName.includes(':') && 
+        roomName.split(':').length > 2 &&
+        roomName.split(':')[0].length == 4
+) {
+        roomName = roomName.substring(0, 14);
+    }
+
     const [inputText, setInputText] = useState('');
     const [ablyInstance, setAblyInstance] = useState(null);
     const [linksInText, setLinksInText] = useState([]);
     const [emailInText, setEmailInText] = useState([]);
     const [roomNameLocal, setRoomNameLocal] = useState("");
+    // const [userCount, setUserCount] = useState(0);
     const inputTextRef = React.useRef('');
 
     useEffect(() => {
@@ -39,11 +49,12 @@ const RoomBox = ({ roomName }) => {
         const channel = ablyInstance.channels.get(roomName);
 
         const handleMessage = (message) => {
+            
             console.log('Received message:', message);
             setRoomNameLocal(roomName);
             if (message.data.type === "please-send-text") {
                 if (inputTextRef?.current?.length > 0 || window?.INPUT_TEXT?.length > 0) {
-                    channel.publish('text', { type: 'text', text: inputTextRef.current || window.INPUT_TEXT });
+                    channel.publish('text', { type: 'text', text: inputTextRef.current || window.INPUT_TEXT },);
                     console.log('Sending text on request :', inputTextRef.current || window.INPUT_TEXT);
                 }
             } else {
@@ -53,7 +64,6 @@ const RoomBox = ({ roomName }) => {
                 }
             }
         };
-
         channel.subscribe('text', handleMessage);
         channel.publish('text', { type: 'please-send-text', text: inputTextRef.current });
         return () => {
@@ -182,6 +192,8 @@ const RoomBox = ({ roomName }) => {
                 >
                     Clear
                 </button>
+
+                {/* <span className='text-2xl ml-2'>Users: {userCount}</span> */}
             </div>
         </div>
     );
